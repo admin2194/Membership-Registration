@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # Backend Service (Development)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: eyea-backend-dev
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://admin:password123@mongodb-local:27017/eyea_db?authSource=admin
+      - JWT_SECRET=dev-jwt-secret-key
+      - API_KEY=eyea-api-key-2024
+      - PORT=3001
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb-local
+    networks:
+      - eyea-network
+    restart: unless-stopped
+    command: npm run start:dev
+
+  # Frontend Service (Development)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+    container_name: eyea-frontend-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3001/v1
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - eyea-network
+    restart: unless-stopped
+    command: pnpm dev
+
+  # Local MongoDB for Development
+  mongodb-local:
+    image: mongo:latest
+    container_name: eyea-mongodb-dev
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password123
+      - MONGO_INITDB_DATABASE=eyea_db
+    volumes:
+      - mongodb_dev_data:/data/db
+      - ./backend/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - eyea-network
+    restart: unless-stopped
+
+  # Redis for Development
+  redis:
+    image: redis:alpine
+    container_name: eyea-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - eyea-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_dev_data:
+  redis_dev_data:
+
+networks:
+  eyea-network:
+    driver: bridge 
