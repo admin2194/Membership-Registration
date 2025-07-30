@@ -17,5 +17,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "exclude": [
+    "api",
+    "api_backup",
+    "node_modules",
+    "dist",
+    "test"
+  ]
 }

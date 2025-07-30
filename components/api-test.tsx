@@ -16,7 +16,7 @@ export function ApiTest() {
     try {
       // Test 1: Basic API connection
       try {
-        const response = await fetch("http://localhost:3001/v1")
+        const response = await fetch("http://apieyeamembership.eyea.et/v1")
         results.basicConnection = response.ok ? "✅ Success" : "❌ Failed"
       } catch (error) {
         results.basicConnection = "❌ Failed"

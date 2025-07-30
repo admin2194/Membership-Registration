@@ -8,7 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix('v1');
   
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN || 'http://apieyeamembership.eyea.et',
     credentials: true,
   });
   

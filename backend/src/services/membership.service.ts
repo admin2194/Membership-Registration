@@ -3,12 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Membership, MembershipDocument } from '../schemas/membership.schema';
 import { MembershipLevel, MembershipLevelDocument } from '../schemas/membership-level.schema';
+import { PaginationDto } from '../dto/pagination.dto';
+import { PaginationService } from './pagination.service';
 
 @Injectable()
 export class MembershipService {
   constructor(
     @InjectModel(Membership.name) private membershipModel: Model<MembershipDocument>,
     @InjectModel(MembershipLevel.name) private membershipLevelModel: Model<MembershipLevelDocument>,
+    private paginationService: PaginationService,
   ) {}
 
   async registerMembership(membershipData: any, userId: string): Promise<Membership> {
@@ -21,6 +24,27 @@ export class MembershipService {
 
   async getMembershipLevels(): Promise<MembershipLevel[]> {
     return this.membershipLevelModel.find().exec();
+  }
+
+  async getAllMemberships(paginationDto: PaginationDto) {
+    const { query, sort, skip, limit } = this.paginationService.buildQuery(paginationDto);
+    
+    const [memberships, total] = await Promise.all([
+      this.membershipModel.find(query)
+        .select('-__v')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .populate('userId', 'fullName phone')
+        .exec(),
+      this.membershipModel.countDocuments(query).exec(),
+    ]);
+
+    return this.paginationService.createPaginationResponse(
+      memberships,
+      total,
+      paginationDto
+    );
   }
 
   async seedMembershipLevels(): Promise<void> {

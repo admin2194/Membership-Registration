@@ -14,6 +14,7 @@ import { MembershipService } from './services/membership.service';
 import { DonationService } from './services/donation.service';
 import { PaymentService } from './services/payment.service';
 import { SeedService } from './services/seed.service';
+import { PaginationService } from './services/pagination.service';
 import { MembershipController } from './controllers/membership.controller';
 import { DonationController } from './controllers/donation.controller';
 import { PaymentController } from './controllers/payment.controller';
@@ -43,7 +44,8 @@ import { PaymentController } from './controllers/payment.controller';
     MembershipService, 
     DonationService, 
     PaymentService,
-    SeedService
+    SeedService,
+    PaginationService
   ],
 })
 export class AppModule {}
