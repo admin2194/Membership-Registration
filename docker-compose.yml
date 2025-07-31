@@ -15,6 +15,7 @@ services:
       - JWT_SECRET=your-super-secret-jwt-key-change-in-production
       - API_KEY=eyea-api-key-2024
       - PORT=3001
+      - CORS_ORIGIN=http://localhost:3000,http://apieyeamembership.eyea.et,https://apieyeamembership.eyea.et
     volumes:
       - ./backend:/app
       - /app/node_modules

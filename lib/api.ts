@@ -3,10 +3,23 @@ const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
     // Client-side: use the current origin to determine API URL
     const currentOrigin = window.location.origin
-    if (currentOrigin.includes('apieyeamembership.eyea.et')) {
-      return 'http://localhost:3001/v1' // Backend is on localhost:3001
+    
+    // Development environment
+    if (currentOrigin.includes('localhost:3000')) {
+      return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/v1'
     }
+    
+    // Production environment - EYEA domain
+    if (currentOrigin.includes('apieyeamembership.eyea.et')) {
+      // Use the same domain for API (assuming backend is on same domain)
+      return `${currentOrigin}/v1`
+    }
+    
+    // Staging or other environments
+    return process.env.NEXT_PUBLIC_API_URL || `${currentOrigin}/v1`
   }
+  
+  // Server-side: use environment variable
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/v1'
 }
 
@@ -54,6 +67,30 @@ class ApiClient {
     return this.request('/auth/sso', {
       method: 'POST',
       body: JSON.stringify({ fullName, phoneNumber }),
+    })
+  }
+
+  async fetchMembershipLevels() {
+    return this.request('/membership/levels', {
+      method: 'GET',
+    })
+  }
+
+  async fetchSubscriptionPayments() {
+    return this.request('/payments', {
+      method: 'GET',
+    })
+  }
+
+  async fetchDonationHistory() {
+    return this.request('/donations', {
+      method: 'GET',
+    })
+  }
+
+  async fetchMembers() {
+    return this.request('/membership', {
+      method: 'GET',
     })
   }
 }

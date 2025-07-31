@@ -12,25 +12,16 @@ services:
     environment:
       - NODE_ENV=production
       - MONGODB_URI=mongodb+srv://admin:ZLwu373CdpGCx8wc@cluster0.rjill6e.mongodb.net/?retrywrites=true&w=majority&appName=Cluster0
-      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
-      - API_KEY=${API_KEY:-eyea-api-key-2024}
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - API_KEY=eyea-api-key-2024
       - PORT=3001
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://apieyeamembership.eyea.et}
-      - API_BASE_URL=http://apieyeamembership.eyea.et
+      - CORS_ORIGIN=http://localhost:3000,http://apieyeamembership.eyea.et,https://apieyeamembership.eyea.et
     volumes:
       - ./backend:/app
       - /app/node_modules
     networks:
       - eyea-network
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-        reservations:
-          memory: 256M
-          cpus: '0.25'
 
   # Frontend Service (Production)
   frontend:
@@ -42,7 +33,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://apieyeamembership.eyea.et/v1}
+      - NEXT_PUBLIC_API_URL=https://apieyeamembership.eyea.et/v1
     volumes:
       - .:/app
       - /app/node_modules
@@ -50,35 +41,6 @@ services:
     networks:
       - eyea-network
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-          cpus: '0.75'
-        reservations:
-          memory: 512M
-          cpus: '0.5'
-
-  # Redis for Production (Caching & Sessions)
-  redis:
-    image: redis:alpine
-    container_name: eyea-redis-prod
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_prod_data:/data
-    networks:
-      - eyea-network
-    restart: unless-stopped
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.25'
-        reservations:
-          memory: 256M
-          cpus: '0.1'
 
   # Nginx Reverse Proxy (Production)
   nginx:
@@ -96,14 +58,18 @@ services:
     networks:
       - eyea-network
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-          cpus: '0.25'
-        reservations:
-          memory: 128M
-          cpus: '0.1'
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:alpine
+    container_name: eyea-redis-prod
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_prod_data:/data
+    networks:
+      - eyea-network
+    restart: unless-stopped
 
 volumes:
   redis_prod_data:

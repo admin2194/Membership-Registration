@@ -6,9 +6,27 @@ async function bootstrap() {
   
   app.setGlobalPrefix('v1');
   
-  // Configure CORS to allow all frontend origins
+  // Configure CORS to allow specific frontend origins
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://apieyeamembership.eyea.et',
+    'https://apieyeamembership.eyea.et',
+    'http://localhost:3001',
+    'https://localhost:3001'
+  ];
+  
   app.enableCors({
-    origin: true, // Allow all origins for now
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log('CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: [
@@ -16,7 +34,8 @@ async function bootstrap() {
       'Authorization', 
       'X-Requested-With',
       'Accept',
-      'Origin'
+      'Origin',
+      'X-KEY'
     ],
     exposedHeaders: ['Content-Length', 'X-Requested-With'],
     preflightContinue: false,
@@ -25,6 +44,6 @@ async function bootstrap() {
   
   await app.listen(process.env.PORT || 3001);
   console.log(`Application is running on: ${await app.getUrl()}`);
-  console.log('CORS enabled for all origins');
+  console.log('CORS enabled for origins:', allowedOrigins);
 }
 bootstrap();
