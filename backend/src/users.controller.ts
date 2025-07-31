@@ -27,9 +27,9 @@ export class UsersController {
     ]);
 
     const userData = users.map(user => ({
-      id: user._id,
-      fullName: user.fullName,
-      phone: user.phone,
+        id: user._id,
+        fullName: user.fullName,
+        phone: user.phone,
     }));
 
     return this.paginationService.createPaginationResponse(

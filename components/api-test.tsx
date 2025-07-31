@@ -2,86 +2,39 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { apiClient } from "@/lib/api"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function ApiTest() {
-  const [testResults, setTestResults] = useState<any>({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [results, setResults] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
 
-  const runTests = async () => {
-    setIsLoading(true)
-    const results: any = {}
-
+  const testApi = async () => {
+    setLoading(true)
     try {
-      // Test 1: Basic API connection
-      try {
-        const response = await fetch("http://apieyeamembership.eyea.et/v1")
-        results.basicConnection = response.ok ? "✅ Success" : "❌ Failed"
-      } catch (error) {
-        results.basicConnection = "❌ Failed"
-      }
-
-      // Test 2: Admin Login
-      try {
-        const loginData = await apiClient.login("admin@eyea.com", "admin123")
-        results.adminLogin = loginData.access_token ? "✅ Success" : "❌ Failed"
-      } catch (error) {
-        results.adminLogin = "❌ Failed"
-      }
-
-      // Test 3: SSO Login
-      try {
-        const ssoData = await apiClient.sso("Test User", "251742219814")
-        results.ssoLogin = ssoData.token ? "✅ Success" : "❌ Failed"
-      } catch (error) {
-        results.ssoLogin = "❌ Failed"
-      }
-
-      // Test 4: Membership Levels
-      try {
-        const levelsData = await apiClient.fetchMembershipLevels()
-        results.membershipLevels = Array.isArray(levelsData) ? "✅ Success" : "❌ Failed"
-      } catch (error) {
-        results.membershipLevels = "❌ Failed"
-      }
-
-      // Test 5: Donation History
-      try {
-        const donationsData = await apiClient.fetchDonationHistory()
-        results.donationHistory = Array.isArray(donationsData) ? "✅ Success" : "❌ Failed"
-      } catch (error) {
-        results.donationHistory = "❌ Failed"
-      }
-
+      const response = await fetch('/api/test')
+      const data = await response.json()
+      setResults(data)
     } catch (error) {
-      console.error("Test error:", error)
+      setResults({ error: 'API test failed' })
     } finally {
-      setIsLoading(false)
-      setTestResults(results)
+      setLoading(false)
     }
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>API Integration Test</CardTitle>
+        <CardTitle>API Test</CardTitle>
+        <CardDescription>Test the API endpoints</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <Button onClick={runTests} disabled={isLoading} className="w-full">
-          {isLoading ? "Running Tests..." : "Run API Tests"}
+      <CardContent>
+        <Button onClick={testApi} disabled={loading}>
+          {loading ? 'Testing...' : 'Test API'}
         </Button>
-        
-        {Object.keys(testResults).length > 0 && (
-          <div className="space-y-2">
-            <h3 className="font-semibold">Test Results:</h3>
-            {Object.entries(testResults).map(([test, result]) => (
-              <div key={test} className="flex justify-between">
-                <span className="capitalize">{test.replace(/([A-Z])/g, ' $1').trim()}:</span>
-                <span>{String(result)}</span>
-              </div>
-            ))}
-          </div>
+        {results && (
+          <pre className="mt-4 p-2 bg-gray-100 rounded text-sm">
+            {JSON.stringify(results, null, 2)}
+          </pre>
         )}
       </CardContent>
     </Card>

@@ -1,90 +1,61 @@
-"use client"
+// Determine the API base URL based on environment
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Client-side: use the current origin to determine API URL
+    const currentOrigin = window.location.origin
+    if (currentOrigin.includes('apieyeamembership.eyea.et')) {
+      return 'http://localhost:3001/v1' // Backend is on localhost:3001
+    }
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/v1'
+}
 
-import { useAuth } from "./auth"
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://apieyeamembership.eyea.et/v1"
+const API_BASE_URL = getApiBaseUrl()
 
 class ApiClient {
-  private getAuthHeader() {
-    const token = useAuth.getState().token
-    return token ? `Bearer ${token}` : ""
+  private baseUrl: string
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl
   }
 
-  private async makeRequest(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}${endpoint}`
+  private async request(endpoint: string, options: RequestInit = {}) {
+    const url = `${this.baseUrl}${endpoint}`
+    
+    // Add CORS headers for cross-origin requests
     const headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
       ...options.headers,
     }
 
-    if (this.getAuthHeader()) {
-      headers.Authorization = this.getAuthHeader()
-    }
-
     const response = await fetch(url, {
-      ...options,
       headers,
+      credentials: 'include', // Include cookies for CORS
+      mode: 'cors', // Explicitly set CORS mode
+      ...options,
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     return response.json()
   }
 
-  // Authentication
-  async sso(fullName: string, phoneNumber: string) {
-    return this.makeRequest("/auth/sso", {
-      method: "POST",
-      headers: {
-        "X-KEY": "test-api-key",
-      },
-      body: JSON.stringify({ fullName, phoneNumber }),
-    })
-  }
-
   async login(email: string, password: string) {
-    return this.makeRequest("/auth/login", {
-      method: "POST",
+    return this.request('/auth/login', {
+      method: 'POST',
       body: JSON.stringify({ email, password }),
     })
   }
 
-  // Membership
-  async fetchMembershipLevels() {
-    return this.makeRequest("/membership/levels")
-  }
-
-  async registerMembership(membershipData: any) {
-    return this.makeRequest("/membership/register", {
-      method: "POST",
-      body: JSON.stringify(membershipData),
+  async sso(fullName: string, phoneNumber: string) {
+    return this.request('/auth/sso', {
+      method: 'POST',
+      body: JSON.stringify({ fullName, phoneNumber }),
     })
-  }
-
-  // Payments
-  async fetchSubscriptionPayments() {
-    return this.makeRequest("/payments/subscriptions")
-  }
-
-  // Donations
-  async fetchDonationHistory() {
-    return this.makeRequest("/donation/history")
-  }
-
-  async submitDonation(donationData: any) {
-    return this.makeRequest("/donation", {
-      method: "POST",
-      body: JSON.stringify(donationData),
-    })
-  }
-
-  // Members (if needed)
-  async fetchMembers() {
-    return this.makeRequest("/users")
   }
 }
 
-export const apiClient = new ApiClient()
+export const apiClient = new ApiClient(API_BASE_URL)

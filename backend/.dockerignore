@@ -80,7 +80,7 @@ API_README.md
 
 # Scripts
 test-*.js
-setup.sh
+setup.sh 
 
 # Next.js API routes (not part of NestJS backend)
 api/ 
