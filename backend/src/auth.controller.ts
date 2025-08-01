@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UnauthorizedException, Get, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, Get, UseGuards, Headers, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
@@ -34,6 +34,12 @@ export class AuthController {
   @Post('seed-admin')
   async seedAdmin() {
     return this.authService.createAdminUser();
+  }
+
+  @Post("change-password")
+  @UseGuards(JwtAuthGuard)
+  async changePassword(@Body() passwordData: { currentPassword: string; newPassword: string }, @Request() req) {
+    return this.authService.changePassword(req.user.email, passwordData.currentPassword, passwordData.newPassword);
   }
 
   @Get('profile')

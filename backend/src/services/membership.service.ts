@@ -47,6 +47,40 @@ export class MembershipService {
     );
   }
 
+  async getMembershipById(id: string): Promise<Membership> {
+    const membership = await this.membershipModel.findById(id)
+      .populate('userId', 'fullName phone')
+      .exec();
+    
+    if (!membership) {
+      throw new Error('Membership not found');
+    }
+    
+    return membership;
+  }
+
+  async updateMembership(id: string, updateData: any): Promise<Membership> {
+    const membership = await this.membershipModel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    ).populate('userId', 'fullName phone');
+    
+    if (!membership) {
+      throw new Error('Membership not found');
+    }
+    
+    return membership;
+  }
+
+  async deleteMembership(id: string): Promise<void> {
+    const result = await this.membershipModel.findByIdAndDelete(id);
+    
+    if (!result) {
+      throw new Error('Membership not found');
+    }
+  }
+
   async seedMembershipLevels(): Promise<void> {
     const levels = [
       { id: 1, name: 'Pre-revenue', price: 120, frequency: 'Monthly' },

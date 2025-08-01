@@ -5,14 +5,7 @@ import Image from "next/image"
 
 export default function Home() {
   return (
-    <div className="h-screen bg-blue-50 relative overflow-hidden flex items-center justify-center">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-green-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-200/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
-
+    <div className="h-screen bg-white relative overflow-hidden flex items-center justify-center">
       {/* Centered Content */}
       <div className="relative z-10 w-full max-w-2xl mx-auto px-4 flex flex-col items-center justify-center h-full">
         {/* Header with Logo */}
@@ -20,12 +13,13 @@ export default function Home() {
           <Image 
             src="/EYEA_Logo_01_Color.png" 
             alt="EYEA Organization" 
-            width={160} 
-            height={80}
-            className="h-16 w-auto"
+            width={240} 
+            height={120}
+            className="h-24 w-auto"
+            priority
           />
           <div className="text-center">
-            <h1 className="text-xl font-bold" style={{ color: '#215ca3' }}>
+            <h1 className="text-xl font-bold text-gray-900">
               Admin Portal
             </h1>
           </div>

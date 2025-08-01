@@ -1,0 +1,719 @@
+{
+	"info": {
+		"_postman_id": "eyea-membership-api",
+		"name": "EYEA Membership API",
+		"description": "Complete API documentation for EYEA Membership Registration System\n\nBase URL: https://apieyeamembership.eyea.et/v1\n\nAuthentication:\n- JWT Bearer Token (for protected endpoints)\n- X-KEY header (API Key)\n\nEnvironment Variables:\n- {{base_url}}: https://apieyeamembership.eyea.et/v1\n- {{auth_token}}: JWT token from login\n- {{api_key}}: Your API key",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key for authentication"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@eyea.et\",\n  \"password\": \"admin123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login as admin user to get JWT token\n\nResponse includes:\n- access_token: JWT token for subsequent requests\n- user: User information\n\nSave the access_token to {{auth_token}} environment variable"
+					},
+					"response": []
+				},
+				{
+					"name": "SSO Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key for authentication"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"John Doe\",\n  \"phoneNumber\": \"+251912345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/sso",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"sso"
+							]
+						},
+						"description": "Single Sign-On login using full name and phone number\n\nResponse includes:\n- access_token: JWT token for subsequent requests\n- user: User information\n\nSave the access_token to {{auth_token}} environment variable"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for admin and SSO login"
+		},
+		{
+			"name": "Dashboard & Analytics",
+			"item": [
+				{
+					"name": "Get Dashboard Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"stats"
+							]
+						},
+						"description": "Get dashboard statistics including total members, payments, and donations\n\nResponse includes:\n- totalMembers: Total number of members\n- totalPayments: Total payment amount\n- totalDonations: Total donation amount\n- recentMembers: Recent member registrations"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Analytics Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics"
+							]
+						},
+						"description": "Get detailed analytics data for charts and reports\n\nResponse includes:\n- memberGrowth: Member growth over time\n- paymentTrends: Payment trends\n- donationStats: Donation statistics\n- membershipLevels: Distribution by membership level"
+					},
+					"response": []
+				}
+			],
+			"description": "Dashboard and analytics endpoints"
+		},
+		{
+			"name": "Membership Management",
+			"item": [
+				{
+					"name": "Get All Members",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/membership?page=1&limit=10&search=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"membership"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search term for name, email, or phone"
+								}
+							]
+						},
+						"description": "Get paginated list of all members\n\nQuery Parameters:\n- page: Page number (default: 1)\n- limit: Items per page (default: 10)\n- search: Search term for filtering\n\nResponse includes:\n- data: Array of members\n- total: Total count\n- page: Current page\n- totalPages: Total pages"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Member by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/membership/{{member_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"membership",
+								"{{member_id}}"
+							]
+						},
+						"description": "Get specific member details by ID\n\nPath Parameters:\n- member_id: The member's unique ID\n\nResponse includes:\n- status: Success status\n- data: Member details"
+					},
+					"response": []
+				},
+				{
+					"name": "Register New Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+251912345678\",\n  \"membershipLevel\": \"Gold\",\n  \"registrationDate\": \"2024-01-15\",\n  \"address\": \"Addis Ababa, Ethiopia\",\n  \"occupation\": \"Software Engineer\",\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe\",\n    \"phone\": \"+251987654321\",\n    \"relationship\": \"Spouse\"\n  },\n  \"additionalInfo\": {\n    \"interests\": [\"Technology\", \"Education\"],\n    \"howDidYouHear\": \"Social Media\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/membership/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"membership",
+								"register"
+							]
+						},
+						"description": "Register a new member\n\nRequired Fields:\n- fullName: Member's full name\n- email: Email address\n- phoneNumber: Phone number\n- membershipLevel: Membership level (Basic, Silver, Gold, Platinum)\n\nOptional Fields:\n- registrationDate: Registration date (ISO format)\n- address: Physical address\n- occupation: Professional occupation\n- emergencyContact: Emergency contact information\n- additionalInfo: Additional member information\n\nResponse includes:\n- status: Success status\n- message: Success message\n- data: Created member details"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Member",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"phoneNumber\": \"+251912345679\",\n  \"membershipLevel\": \"Platinum\",\n  \"address\": \"Updated Address, Addis Ababa\",\n  \"occupation\": \"Senior Software Engineer\",\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe Updated\",\n    \"phone\": \"+251987654322\",\n    \"relationship\": \"Spouse\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/membership/{{member_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"membership",
+								"{{member_id}}"
+							]
+						},
+						"description": "Update existing member information\n\nPath Parameters:\n- member_id: The member's unique ID\n\nBody: Same structure as registration, but all fields are optional\n\nResponse includes:\n- status: Success status\n- message: Success message\n- data: Updated member details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Member",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/membership/{{member_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"membership",
+								"{{member_id}}"
+							]
+						},
+						"description": "Delete a member by ID\n\nPath Parameters:\n- member_id: The member's unique ID\n\nResponse includes:\n- status: Success status\n- message: Success message"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Membership Levels",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/membership/levels",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"membership",
+								"levels"
+							]
+						},
+						"description": "Get available membership levels\n\nResponse includes:\n- Array of membership levels with:\n  - name: Level name (Basic, Silver, Gold, Platinum)\n  - description: Level description\n  - benefits: Array of benefits\n  - price: Membership price"
+					},
+					"response": []
+				}
+			],
+			"description": "Complete CRUD operations for membership management"
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Get Subscription Payments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/payments/subscriptions?page=1&limit=10&status=completed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"subscriptions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "status",
+									"value": "completed",
+									"description": "Payment status filter (pending, completed, failed)"
+								}
+							]
+						},
+						"description": "Get subscription payment history\n\nQuery Parameters:\n- page: Page number (default: 1)\n- limit: Items per page (default: 10)\n- status: Payment status filter\n\nResponse includes:\n- Array of payment records with:\n  - memberId: Member ID\n  - amount: Payment amount\n  - status: Payment status\n  - date: Payment date\n  - paymentMethod: Payment method used"
+					},
+					"response": []
+				}
+			],
+			"description": "Payment management endpoints"
+		},
+		{
+			"name": "Donations",
+			"item": [
+				{
+					"name": "Get Donation History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/donation/history?page=1&limit=10&donor=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"donation",
+								"history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "donor",
+									"value": "",
+									"description": "Donor name filter"
+								}
+							]
+						},
+						"description": "Get donation history\n\nQuery Parameters:\n- page: Page number (default: 1)\n- limit: Items per page (default: 10)\n- donor: Donor name filter\n\nResponse includes:\n- Array of donation records with:\n  - donorName: Donor's name\n  - amount: Donation amount\n  - date: Donation date\n  - purpose: Donation purpose\n  - anonymous: Whether donation is anonymous"
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Donation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"donorName\": \"Anonymous Donor\",\n  \"amount\": 1000,\n  \"purpose\": \"General Fund\",\n  \"anonymous\": true,\n  \"email\": \"donor@example.com\",\n  \"phoneNumber\": \"+251912345678\",\n  \"message\": \"Supporting EYEA's mission\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/donation",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"donation"
+							]
+						},
+						"description": "Submit a new donation\n\nRequired Fields:\n- donorName: Donor's name (or 'Anonymous')\n- amount: Donation amount\n- purpose: Purpose of donation\n\nOptional Fields:\n- anonymous: Whether to keep donor anonymous (default: false)\n- email: Donor's email\n- phoneNumber: Donor's phone number\n- message: Personal message from donor\n\nResponse includes:\n- status: Success status\n- message: Success message\n- data: Created donation details"
+					},
+					"response": []
+				}
+			],
+			"description": "Donation management endpoints"
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						},
+						"description": "Get current user profile information\n\nResponse includes:\n- user: User profile details\n- permissions: User permissions\n- lastLogin: Last login timestamp"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Updated Admin Name\",\n  \"email\": \"admin.updated@eyea.et\",\n  \"phoneNumber\": \"+251912345679\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						},
+						"description": "Update current user profile\n\nBody: User profile fields to update\n\nResponse includes:\n- status: Success status\n- message: Success message\n- data: Updated user profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "JWT Bearer token"
+							},
+							{
+								"key": "X-KEY",
+								"value": "{{api_key}}",
+								"description": "API Key"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"oldpassword123\",\n  \"newPassword\": \"newpassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/change-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"change-password"
+							]
+						},
+						"description": "Change user password\n\nRequired Fields:\n- currentPassword: Current password\n- newPassword: New password\n\nResponse includes:\n- status: Success status\n- message: Success message"
+					},
+					"response": []
+				}
+			],
+			"description": "User profile and account management"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-save auth token from login responses",
+					"if (pm.response && pm.response.json() && pm.response.json().access_token) {",
+					"    pm.environment.set('auth_token', pm.response.json().access_token);",
+					"    console.log('Auth token saved to environment');",
+					"}",
+					"",
+					"// Log request details for debugging",
+					"console.log('Making request to:', pm.request.url.toString());",
+					"console.log('Method:', pm.request.method);",
+					"console.log('Headers:', pm.request.headers.toJSON());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Test response status",
+					"pm.test('Status code is 200 or 201', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"});",
+					"",
+					"// Test response time",
+					"pm.test('Response time is less than 5000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"// Test response has JSON body",
+					"pm.test('Response has JSON body', function () {",
+					"    pm.response.to.have.jsonBody();",
+					"});",
+					"",
+					"// Log response for debugging",
+					"console.log('Response status:', pm.response.status);",
+					"console.log('Response time:', pm.response.responseTime + 'ms');",
+					"console.log('Response body:', pm.response.json());"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://apieyeamembership.eyea.et/v1",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "0A9PRT4UaiwLAXllAOwm29683ocYyIpjLeo1bcgTIY",
+			"type": "string"
+		},
+		{
+			"key": "member_id",
+			"value": "member-id-here",
+			"type": "string"
+		}
+	]
+} 

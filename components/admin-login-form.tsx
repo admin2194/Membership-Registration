@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,6 +18,7 @@ export function AdminLoginForm() {
   const [error, setError] = useState("")
   
   const { adminLogin } = useAuth()
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -24,8 +26,16 @@ export function AdminLoginForm() {
     setError("")
     
     try {
-      await adminLogin(email, password)
+      const success = await adminLogin(email, password)
+      
+      if (success) {
+        // Login successful, redirect to dashboard
+        router.push("/dashboard")
+      } else {
+        setError("Invalid email or password")
+      }
     } catch (err) {
+      console.error("Login error:", err)
       setError(err instanceof Error ? err.message : "Login failed")
     } finally {
       setIsLoading(false)
@@ -33,10 +43,10 @@ export function AdminLoginForm() {
   }
 
   return (
-    <Card className="border-0 shadow-2xl bg-white/90 backdrop-blur-sm animate-in slide-in-from-bottom-4 duration-700">
+    <Card className="border border-gray-200 bg-white shadow-sm">
       <CardHeader className="space-y-2 text-center pb-3">
         <div>
-          <CardTitle className="text-xl font-bold" style={{ color: '#215ca3' }}>
+          <CardTitle className="text-xl font-bold text-gray-900">
             Welcome Back
           </CardTitle>
           <CardDescription className="text-sm mt-1 text-gray-600">
@@ -61,7 +71,7 @@ export function AdminLoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="h-9 bg-white/70 backdrop-blur-sm border-gray-200 focus:border-blue-300 focus:ring-blue-200 transition-all duration-300 text-sm"
+                className="h-9 bg-white border-gray-200 focus:border-gray-400 focus:ring-gray-200 transition-all duration-300 text-sm"
               />
             </div>
           </div>
@@ -80,7 +90,7 @@ export function AdminLoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="h-9 bg-white/70 backdrop-blur-sm border-gray-200 focus:border-blue-300 focus:ring-blue-200 transition-all duration-300 pr-10 text-sm"
+                className="h-9 bg-white border-gray-200 focus:border-gray-400 focus:ring-gray-200 transition-all duration-300 pr-10 text-sm"
               />
               <Button
                 type="button"
@@ -107,7 +117,7 @@ export function AdminLoginForm() {
 
           <Button 
             type="submit" 
-            className="w-full h-9 bg-blue-500 hover:bg-blue-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm" 
+            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white font-semibold transition-all duration-300 text-sm" 
             disabled={isLoading}
           >
             {isLoading ? (
@@ -124,12 +134,12 @@ export function AdminLoginForm() {
           </Button>
         </form>
         
-        <div className="mt-3 p-2 rounded-lg bg-blue-50 border border-blue-200">
+        <div className="mt-3 p-2 rounded-lg bg-gray-50 border border-gray-200">
           <div className="flex items-center space-x-1 mb-1">
-            <Sparkles className="h-3 w-3 text-blue-600" />
-            <span className="text-xs font-semibold text-blue-700">Default Credentials</span>
+            <Sparkles className="h-3 w-3 text-gray-600" />
+            <span className="text-xs font-semibold text-gray-700">Default Credentials</span>
           </div>
-          <div className="text-xs text-blue-600">
+          <div className="text-xs text-gray-600">
             <p><span className="font-medium">Email:</span> admin@eyea.org</p>
             <p><span className="font-medium">Password:</span> admin123</p>
           </div>

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards, Request, Query } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Body, Param, UseGuards, Request, Query } from '@nestjs/common';
 import { MembershipService } from '../services/membership.service';
 import { JwtAuthGuard } from '../jwt-auth.guard';
 import { PaginationDto } from '../dto/pagination.dto';
@@ -30,5 +30,36 @@ export class MembershipController {
   @UseGuards(JwtAuthGuard)
   async getAllMemberships(@Query() paginationDto: PaginationDto) {
     return await this.membershipService.getAllMemberships(paginationDto);
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async getMembershipById(@Param('id') id: string) {
+    const membership = await this.membershipService.getMembershipById(id);
+    return {
+      status: 'success',
+      data: membership
+    };
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  async updateMembership(@Param('id') id: string, @Body() updateData: any) {
+    const membership = await this.membershipService.updateMembership(id, updateData);
+    return {
+      status: 'success',
+      message: 'Membership updated successfully',
+      data: membership
+    };
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async deleteMembership(@Param('id') id: string) {
+    await this.membershipService.deleteMembership(id);
+    return {
+      status: 'success',
+      message: 'Membership deleted successfully'
+    };
   }
 } 

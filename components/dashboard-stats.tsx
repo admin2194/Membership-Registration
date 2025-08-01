@@ -36,9 +36,9 @@ export function DashboardStats({ membershipLevels, subscriptionPayments, donatio
       title: "Total Members",
       value: totalMembers,
       icon: Users,
-      color: "from-blue-500 to-blue-600",
-      bgColor: "bg-blue-50",
-      iconColor: "text-blue-600",
+      color: "text-gray-600",
+      bgColor: "bg-gray-50",
+      iconColor: "text-gray-600",
       description: "Across all membership levels",
       trend: `${memberGrowth >= 0 ? '+' : ''}${memberGrowth.toFixed(1)}% from last month`
     },
@@ -46,9 +46,9 @@ export function DashboardStats({ membershipLevels, subscriptionPayments, donatio
       title: "Subscription Revenue",
       value: `${totalSubscriptionRevenue.toLocaleString()} ETB`,
       icon: CreditCard,
-      color: "from-green-500 to-green-600",
-      bgColor: "bg-green-50",
-      iconColor: "text-green-600",
+      color: "text-gray-600",
+      bgColor: "bg-gray-50",
+      iconColor: "text-gray-600",
       description: `From ${(subscriptionPayments || []).length} payments`,
       trend: `${revenueGrowth >= 0 ? '+' : ''}${revenueGrowth.toFixed(1)}% from last month`
     },
@@ -56,9 +56,9 @@ export function DashboardStats({ membershipLevels, subscriptionPayments, donatio
       title: "Total Donations",
       value: `${totalDonations.toLocaleString()} ETB`,
       icon: DollarSign,
-      color: "from-purple-500 to-purple-600",
-      bgColor: "bg-purple-50",
-      iconColor: "text-purple-600",
+      color: "text-gray-600",
+      bgColor: "bg-gray-50",
+      iconColor: "text-gray-600",
       description: `From ${(donationHistory || []).length} donations`,
       trend: `${donationGrowth >= 0 ? '+' : ''}${donationGrowth.toFixed(1)}% from last month`
     },
@@ -66,9 +66,9 @@ export function DashboardStats({ membershipLevels, subscriptionPayments, donatio
       title: "Active Payments",
       value: recentPayments,
       icon: TrendingUp,
-      color: "from-orange-500 to-orange-600",
-      bgColor: "bg-orange-50",
-      iconColor: "text-orange-600",
+      color: "text-gray-600",
+      bgColor: "bg-gray-50",
+      iconColor: "text-gray-600",
       description: "Successful payments this period",
       trend: `${recentPayments > 0 ? '+' : ''}${recentPayments} this month`
     }
@@ -79,13 +79,12 @@ export function DashboardStats({ membershipLevels, subscriptionPayments, donatio
       {stats.map((stat, index) => (
         <Card 
           key={stat.title}
-          className="border-0 shadow-xl bg-gradient-to-br from-white to-gray-50 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 animate-in slide-in-from-bottom-4 duration-700"
-          style={{ animationDelay: `${index * 100}ms` }}
+          className="border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-300"
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
             <CardTitle className="text-sm font-semibold text-gray-700">{stat.title}</CardTitle>
-            <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg`}>
-              <stat.icon className="h-5 w-5 text-white" />
+            <div className={`p-3 rounded-lg ${stat.bgColor} border border-gray-100`}>
+              <stat.icon className={`h-5 w-5 ${stat.iconColor}`} />
             </div>
           </CardHeader>
           <CardContent className="space-y-2">

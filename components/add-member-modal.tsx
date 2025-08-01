@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -171,11 +171,11 @@ export function AddMemberModal({ isOpen, onClose, onSuccess }: AddMemberModalPro
   }
 
   // Fetch membership levels when modal opens
-  useState(() => {
+  useEffect(() => {
     if (isOpen) {
       fetchMembershipLevels()
     }
-  })
+  }, [isOpen])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
