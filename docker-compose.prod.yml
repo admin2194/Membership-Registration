@@ -13,7 +13,7 @@ services:
       - NODE_ENV=production
       - MONGODB_URI=mongodb+srv://admin:ZLwu373CdpGCx8wc@cluster0.rjill6e.mongodb.net/?retrywrites=true&w=majority&appName=Cluster0
       - JWT_SECRET=your-super-secret-jwt-key-change-in-production
-      - API_KEY=eyea-api-key-2024
+      - API_KEY=0A9PRT4UaiwLAXllAOwm29683ocYyIpjLeo1bcgTIY
       - PORT=3001
       - CORS_ORIGIN=http://localhost:3000,http://apieyeamembership.eyea.et,https://apieyeamembership.eyea.et
     volumes:

@@ -4,7 +4,7 @@ class ApiClient {
 
   constructor() {
     // Always use environment variable for SSR safety
-    this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/v1'
+    this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://apieyeamembership.eyea.et/v1'
     console.log('API Base URL:', this.baseUrl)
   }
 

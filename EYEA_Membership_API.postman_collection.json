@@ -1,0 +1,404 @@
+{
+  "info": {
+    "name": "EYEA Membership API",
+    "description": "Complete API collection for EYEA Membership Registration System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://apieyeamembership.eyea.et/v1",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "0A9PRT4UaiwLAXllAOwm29683ocYyIpjLeo1bcgTIY",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "X-KEY",
+        "value": "{{api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@eyea.org\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.access_token) {",
+                  "        pm.environment.set('auth_token', response.access_token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SSO Login (Mobile)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"phoneNumber\": \"+251912345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/sso",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "sso"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.environment.set('auth_token', response.token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"oldpassword123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Test API Connection",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/auth/test",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Membership",
+      "item": [
+        {
+          "name": "Get Membership Levels",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/membership/levels",
+              "host": ["{{base_url}}"],
+              "path": ["membership", "levels"]
+            }
+          }
+        },
+        {
+          "name": "Register New Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+251912345678\",\n  \"faydaId\": \"123456789\",\n  \"membershipLevel\": \"level1\",\n  \"address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"Addis Ababa\",\n    \"state\": \"Addis Ababa\",\n    \"zipCode\": \"1000\",\n    \"country\": \"Ethiopia\"\n  },\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe\",\n    \"phone\": \"+251987654321\",\n    \"relationship\": \"Spouse\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/membership/register",
+              "host": ["{{base_url}}"],
+              "path": ["membership", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get All Members",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/membership?page=1&limit=10&search=john&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["membership"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "john"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Member by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/membership/{{member_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["membership", "{{member_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Member",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"phoneNumber\": \"+251912345679\",\n  \"membershipLevel\": \"level2\",\n  \"address\": {\n    \"street\": \"456 New St\",\n    \"city\": \"Addis Ababa\",\n    \"state\": \"Addis Ababa\",\n    \"zipCode\": \"1001\",\n    \"country\": \"Ethiopia\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/membership/{{member_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["membership", "{{member_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Member",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/membership/{{member_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["membership", "{{member_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Get Subscription Payments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/payments/subscriptions?page=1&limit=10&status=completed",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "subscriptions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "completed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": \"{{member_id}}\",\n  \"amount\": 100,\n  \"currency\": \"ETB\",\n  \"paymentMethod\": \"mobile_money\",\n  \"membershipLevel\": \"level1\",\n  \"description\": \"Annual membership payment\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": ["{{base_url}}"],
+              "path": ["payments"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Donations",
+      "item": [
+        {
+          "name": "Get Donation History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/donation/history?page=1&limit=10&donor=john",
+              "host": ["{{base_url}}"],
+              "path": ["donation", "history"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "donor",
+                  "value": "john"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Donation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"donorName\": \"John Doe\",\n  \"amount\": 50,\n  \"currency\": \"ETB\",\n  \"message\": \"Supporting the cause\",\n  \"anonymous\": false,\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+251912345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/donation",
+              "host": ["{{base_url}}"],
+              "path": ["donation"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Get Analytics Data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/data",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "data"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 
